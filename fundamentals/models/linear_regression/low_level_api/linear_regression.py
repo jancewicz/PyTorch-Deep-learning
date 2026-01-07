@@ -1,5 +1,5 @@
 import torch
-from fundamentals.linear_regression.data import X_train, y_train, X_test
+from fundamentals.models.data import X_train, y_train, X_test
 
 """
 Creating simple linear regression model with low level pytorch api utilities.

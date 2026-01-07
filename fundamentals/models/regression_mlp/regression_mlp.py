@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from fundamentals.linear_regression.data import X_train, y_train
-from fundamentals.linear_regression.low_level_api.linear_regression import n_features
+from fundamentals.models.data import X_train, y_train
+from fundamentals.models.linear_regression.low_level_api.linear_regression import n_features
 
 """
 nn.Sequential is a module that chains multiple modules. It puts input into first module, then the output from the 
