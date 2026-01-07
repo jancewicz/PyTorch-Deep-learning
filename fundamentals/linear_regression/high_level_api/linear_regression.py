@@ -30,13 +30,12 @@ def train_bdg(model, optimizer, criterion, X_train, y_train, n_epochs):
         print(f"Epoch {epoch + 1}/{n_epochs}, Loss: {loss.item()}")
 
 
-train_bdg(model, optimizer, mse, X_train=X_train, y_train=y_train, n_epochs=n_epochs)
+if __name__ == "__main__":
+    train_bdg(model, optimizer, mse, X_train=X_train, y_train=y_train, n_epochs=n_epochs)
 
-# With trained model it's ready to predict unseen data
-X_new = X_test[:3]
-with torch.no_grad():
-    y_pred = model(X_new)
+    # With trained model it's ready to predict unseen data
+    X_new = X_test[:3]
+    with torch.no_grad():
+        y_pred = model(X_new)
 
-print(y_pred)
-
-
+    print(y_pred)
