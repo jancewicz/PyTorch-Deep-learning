@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from fundamentals.models.data import X_train, y_train
+from fundamentals.models.data import X_train, y_train, X_test
 from fundamentals.models.linear_regression.low_level_api.linear_regression import n_features
 
 """
