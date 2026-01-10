@@ -18,7 +18,7 @@ class WideAndDeepV2(nn.Module):
         self.output_layer = nn.Linear(40 + n_features, 1)
 
     def forward(self, X):
-        # Define which slices of data should go through wide path and deep path
+        # Define which slices of same data should go through wide path and deep path
         X_wide = X[:, :5]
         X_deep = X[:, 2:]
         deep_output = self.deep_stack(X_deep)
