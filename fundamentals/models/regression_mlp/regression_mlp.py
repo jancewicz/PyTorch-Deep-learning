@@ -3,7 +3,7 @@ import torch.nn as nn
 import torchmetrics
 from torch.utils.data import DataLoader, TensorDataset
 
-from fundamentals.models.data import X_train, y_train, X_valid, y_valid
+from fundamentals.models.data import X_train, y_train, X_valid, y_valid, train_dataset, train_loader
 from fundamentals.models.linear_regression.low_level_api.linear_regression import n_features
 
 """
@@ -14,10 +14,10 @@ the outputs of one module as an input to the next one until neural network ends.
 nn.Sequential is one of the most useful modules in PyTorch.
 """
 
-# if torch.cuda.is_available():
-#     device = "cuda"
-# else:
-device = "cpu"
+if torch.cuda.is_available():
+    device = "cuda"
+else:
+    device = "cpu"
 
 torch.manual_seed(42)
 
@@ -37,9 +37,6 @@ n_epochs = 20
 # Some optimizers have internal state, and this state is allocated on the same device as the model
 # Important to create the optimizer after model is moved to the GPU
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-
-train_dataset = TensorDataset(X_train, y_train)
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
 
 def train(model, optimizer, criterion, train_loader, n_epochs):

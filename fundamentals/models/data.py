@@ -1,6 +1,7 @@
 import torch
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
+from torch.utils.data import TensorDataset, DataLoader
 
 housing = fetch_california_housing()
 X = housing.data
@@ -28,3 +29,7 @@ X_test = (X_test - means) / stds
 y_train = torch.FloatTensor(y_train).reshape(-1, 1)
 y_valid = torch.FloatTensor(y_valid).reshape(-1, 1)
 y_test = torch.FloatTensor(y_test).reshape(-1, 1)
+
+# Create dataset and dataloader for housing data
+train_dataset = TensorDataset(X_train, y_train)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
