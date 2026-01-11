@@ -3,6 +3,7 @@ import torch.nn as nn
 
 from fundamentals.models.data import X_train, train_loader
 from fundamentals.models.regression_mlp.regression_mlp import train
+from utils.device import get_device
 
 """
 Wide and Deep neural network (Heng-Tze Cheng 2016) - it connects all or part of the inputs to the output layer.
@@ -13,7 +14,7 @@ In contrast, in simple MLP all the data has to go through full stack of layers -
 sequence of transformations.
 """
 
-device = "cpu"
+device = get_device()
 n_features = X_train.shape[1]
 
 

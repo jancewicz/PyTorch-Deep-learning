@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader, TensorDataset
 
 from fundamentals.models.data import X_valid, y_valid, train_loader
 from fundamentals.models.linear_regression.low_level_api.linear_regression import n_features
+from utils.device import get_device
 
 """
 nn.Sequential is a module that chains multiple modules. It puts input into first module, then the output from the 
@@ -14,10 +15,7 @@ the outputs of one module as an input to the next one until neural network ends.
 nn.Sequential is one of the most useful modules in PyTorch.
 """
 
-if torch.cuda.is_available():
-    device = "cuda"
-else:
-    device = "cpu"
+device = get_device()
 
 torch.manual_seed(42)
 

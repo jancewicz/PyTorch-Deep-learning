@@ -4,10 +4,11 @@ import torchvision
 import torchvision.transforms.v2 as T
 from torch.utils.data import DataLoader
 
+from utils.device import get_device
 from fundamentals.models.regression_mlp.regression_mlp import train, evaluate
 from fundamentals.models.image_classifier.image_classifier import model, xentropy
 
-device = "cpu"
+device = get_device()
 
 # data processing function
 toTensor = T.Compose([T.ToImage(), T.ToDtype(torch.float32, scale=True)])

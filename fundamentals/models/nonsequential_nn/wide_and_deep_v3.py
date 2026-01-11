@@ -3,12 +3,13 @@ import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader, Dataset
 
 from fundamentals.models.data import X_train, y_train
+from utils.device import get_device
 
 """
 Sometimes model require different input types that cannot be combined easily into single tensor. For example, if we want
 to feed neural net with image and text data, those inputs are going to have completely different number of dimensions.
 """
-device = "cpu"
+device = get_device()
 
 
 class WideAndDeepV3(nn.Module):
