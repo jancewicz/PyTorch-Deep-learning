@@ -3,7 +3,7 @@ import torch.nn as nn
 import torchmetrics
 from torch.utils.data import DataLoader, TensorDataset
 
-from fundamentals.models.data import X_train, y_train, X_valid, y_valid, train_dataset, train_loader
+from fundamentals.models.data import X_valid, y_valid, train_loader
 from fundamentals.models.linear_regression.low_level_api.linear_regression import n_features
 
 """
