@@ -37,12 +37,12 @@ learning_rate = 0.002
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 n_epochs = 20
 
-train(model, optimizer, criterion=xentropy, train_loader=train_loader, n_epochs=n_epochs)
+train(
+    model, optimizer, criterion=xentropy, train_loader=train_loader, n_epochs=n_epochs
+)
 
 # evaluate model function
 accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=10).to(device)
-evaluation = evaluate(
-    model, valid_loader, accuracy
-)
+evaluation = evaluate(model, valid_loader, accuracy)
 
 print(f"Accuracy on validation set: {evaluation}")

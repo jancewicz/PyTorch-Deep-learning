@@ -2,7 +2,9 @@ import torch
 import torch.nn as nn
 
 from fundamentals.models.data import X_train, y_train, X_test
-from fundamentals.models.linear_regression.low_level_api.linear_regression import n_features
+from fundamentals.models.linear_regression.low_level_api.linear_regression import (
+    n_features,
+)
 
 """
 Creating simple linear regression model with higher level pytorch api utilities.
@@ -23,7 +25,9 @@ mse = nn.MSELoss()
 def train_bdg(model, optimizer, criterion, X_train, y_train, n_epochs):
     for epoch in range(n_epochs):
         y_pred = model(X_train)
-        loss = criterion(y_pred, y_train)  # in PyTorch loss function object is commonly called criterion
+        loss = criterion(
+            y_pred, y_train
+        )  # in PyTorch loss function object is commonly called criterion
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
@@ -31,7 +35,9 @@ def train_bdg(model, optimizer, criterion, X_train, y_train, n_epochs):
 
 
 if __name__ == "__main__":
-    train_bdg(model, optimizer, mse, X_train=X_train, y_train=y_train, n_epochs=n_epochs)
+    train_bdg(
+        model, optimizer, mse, X_train=X_train, y_train=y_train, n_epochs=n_epochs
+    )
 
     # With trained model it's ready to predict unseen data
     X_new = X_test[:3]

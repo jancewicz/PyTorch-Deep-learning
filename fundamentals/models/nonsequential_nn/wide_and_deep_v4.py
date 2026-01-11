@@ -15,8 +15,10 @@ class WideAndDeepV4(nn.Module):
     def __init__(self, n_features):
         super().__init__()
         self.deep_stack = nn.Sequential(
-            nn.Linear(n_features, 50), nn.ReLU(),
-            nn.Linear(50, 40), nn.ReLU(),
+            nn.Linear(n_features, 50),
+            nn.ReLU(),
+            nn.Linear(50, 40),
+            nn.ReLU(),
         )
         self.output_layer = nn.Linear(40 + n_features, 1)
         self.aux_output_layer = nn.Linear(40, 1)

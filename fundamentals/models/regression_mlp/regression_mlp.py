@@ -4,7 +4,9 @@ import torchmetrics
 from torch.utils.data import DataLoader, TensorDataset
 
 from fundamentals.models.data import X_valid, y_valid, train_loader
-from fundamentals.models.linear_regression.low_level_api.linear_regression import n_features
+from fundamentals.models.linear_regression.low_level_api.linear_regression import (
+    n_features,
+)
 from utils.device import get_device
 
 """
@@ -20,11 +22,7 @@ device = get_device()
 torch.manual_seed(42)
 
 model = nn.Sequential(
-    nn.Linear(n_features, 50),
-    nn.ReLU(),
-    nn.Linear(50, 40),
-    nn.ReLU(),
-    nn.Linear(40, 1)
+    nn.Linear(n_features, 50), nn.ReLU(), nn.Linear(50, 40), nn.ReLU(), nn.Linear(40, 1)
 )
 model = model.to(device=device)
 
@@ -113,9 +111,12 @@ valid_mse = evaluate(model, valid_loader, mse)
 if __name__ == "__main__":
     train(model, optimizer, mse, train_loader, n_epochs)
 
-    valid_mse = evaluate(model, valid_loader, mse, aggregate_fn=lambda metrics: torch.sqrt(torch.mean(metrics)))
+    valid_mse = evaluate(
+        model,
+        valid_loader,
+        mse,
+        aggregate_fn=lambda metrics: torch.sqrt(torch.mean(metrics)),
+    )
     valid_tm = evaluate_tm(model, valid_loader, rmse_tm)
 
     print(valid_tm)
-
-

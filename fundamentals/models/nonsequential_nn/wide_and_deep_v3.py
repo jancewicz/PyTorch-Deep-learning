@@ -17,8 +17,10 @@ class WideAndDeepV3(nn.Module):
     def __init__(self, n_features):
         super().__init__()
         self.deep_stack = nn.Sequential(
-            nn.Linear(n_features, 50), nn.ReLU(),
-            nn.Linear(50, 40), nn.ReLU(),
+            nn.Linear(n_features, 50),
+            nn.ReLU(),
+            nn.Linear(50, 40),
+            nn.ReLU(),
         )
         self.output_layer = nn.Linear(40 + n_features, 1)
 
@@ -60,6 +62,7 @@ class WideAndDeepDataset(Dataset):
     When model has many inputs, it's easy to mess up their order. The recommended solution is to name each input type.
     Creating custom dataset class can provide multiple options for it: ex. returning dictionary with input names.
     """
+
     def __init__(self, X_wide, X_deep, y):
         self.X_wide = X_wide
         self.X_deep = X_deep
@@ -69,15 +72,14 @@ class WideAndDeepDataset(Dataset):
         return len(self.y)
 
     def __getitem__(self, idx):
-        input_dict = {
-            "X_wide": self.X_wide[idx],
-            "X_deep": self.X_deep[idx]
-        }
+        input_dict = {"X_wide": self.X_wide[idx], "X_deep": self.X_deep[idx]}
         return input_dict, self.y[idx]
 
 
 # Then create dataset and dataloader
-train_data_named = WideAndDeepDataset(X_wide=X_train[:, :5], X_deep=X_train[:, 2:], y=y_train)
+train_data_named = WideAndDeepDataset(
+    X_wide=X_train[:, :5], X_deep=X_train[:, 2:], y=y_train
+)
 train_loader_named = DataLoader(train_data_named, batch_size=32, shuffle=True)
 
 

@@ -12,7 +12,7 @@ inside data.py file using sklearn train_test_split method.
 torch.manual_seed(42)
 n_features = X_train.shape[1]  # 8 input features
 w = torch.randn((n_features, 1), requires_grad=True)
-b = torch.tensor(0., requires_grad=True)
+b = torch.tensor(0.0, requires_grad=True)
 
 # Train model
 if __name__ == "__main__":
@@ -35,5 +35,3 @@ if __name__ == "__main__":
         y_pred = X_new @ w + b
 
     print(y_pred)
-
-

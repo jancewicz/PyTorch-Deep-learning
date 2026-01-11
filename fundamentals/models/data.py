@@ -10,7 +10,9 @@ y = housing.target
 # Split for training data, and test data
 X_tmp, X_test, y_tmp, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 # Split training data into train and validation set
-X_train, X_valid, y_train, y_valid = train_test_split(X_tmp, y_tmp, test_size=0.25, random_state=42)
+X_train, X_valid, y_train, y_valid = train_test_split(
+    X_tmp, y_tmp, test_size=0.25, random_state=42
+)
 
 # Convert to tensors
 X_train = torch.FloatTensor(X_train)

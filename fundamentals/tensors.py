@@ -26,7 +26,7 @@ res = X @ X.T
 # Convert tensor to numpy array
 np_arr = X.numpy()
 # Crate tensor from numpy array
-tensor_from_np = torch.tensor(np.array([[1., 4., 7.], [2., 3., 6.]]))
+tensor_from_np = torch.tensor(np.array([[1.0, 4.0, 7.0], [2.0, 3.0, 6.0]]))
 
 
 """

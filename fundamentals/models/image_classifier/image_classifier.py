@@ -5,6 +5,7 @@ from utils.device import get_device
 
 device = get_device()
 
+
 class ImageClassifier(nn.Module):
     def __init__(self, n_inputs, n_hidden1, n_hidden2, n_classes):
         super().__init__()
@@ -14,7 +15,7 @@ class ImageClassifier(nn.Module):
             nn.ReLU(),
             nn.Linear(n_hidden1, n_hidden2),
             nn.ReLU(),
-            nn.Linear(n_hidden2, n_classes)
+            nn.Linear(n_hidden2, n_classes),
         )
 
     def forward(self, X):
@@ -22,12 +23,7 @@ class ImageClassifier(nn.Module):
 
 
 torch.manual_seed(42)
-model = ImageClassifier(
-    n_inputs=28 * 28,
-    n_hidden1=300,
-    n_hidden2=100,
-    n_classes=10
-)
+model = ImageClassifier(n_inputs=28 * 28, n_hidden1=300, n_hidden2=100, n_classes=10)
 model = model.to(device)
 
 xentropy = nn.CrossEntropyLoss()
