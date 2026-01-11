@@ -3,7 +3,7 @@ import torch
 
 def get_device():
     """
-    Get GPU device if is available otherwise CPU
+    Get GPU device if it is available otherwise choose CPU
     """
     if torch.backends.mps.is_available():
         return torch.device("mps")
