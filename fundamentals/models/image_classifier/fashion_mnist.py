@@ -32,6 +32,8 @@ valid_loader = DataLoader(valid_data, batch_size=32)
 test_loader = DataLoader(test_data, batch_size=32)
 
 learning_rate = 0.002
+
+
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 n_epochs = 20
 

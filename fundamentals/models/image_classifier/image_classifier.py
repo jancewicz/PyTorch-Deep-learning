@@ -1,6 +1,9 @@
 import torch
 import torch.nn as nn
 
+from utils.device import get_device
+
+device = get_device()
 
 class ImageClassifier(nn.Module):
     def __init__(self, n_inputs, n_hidden1, n_hidden2, n_classes):
@@ -25,5 +28,6 @@ model = ImageClassifier(
     n_hidden2=100,
     n_classes=10
 )
+model = model.to(device)
 
 xentropy = nn.CrossEntropyLoss()
