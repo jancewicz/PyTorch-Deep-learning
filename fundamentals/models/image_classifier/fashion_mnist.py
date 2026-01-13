@@ -2,7 +2,9 @@ import torch
 import torchmetrics
 import torchvision
 import torchvision.transforms.v2 as T
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
+from loguru import logger
 
 from utils.device import get_device
 from fundamentals.models.regression_mlp.regression_mlp import train, evaluate
@@ -14,7 +16,7 @@ device = get_device()
 toTensor = T.Compose([T.ToImage(), T.ToDtype(torch.float32, scale=True)])
 
 # transform fashion MNIST from PIL to PyTorch float tensors with scaled pixel values
-train_and_validate_data = torchvision.datasets.FashionMNIST(
+train_and_valid_data = torchvision.datasets.FashionMNIST(
     root="datasets", train=True, download=True, transform=toTensor
 )
 test_data = torchvision.datasets.FashionMNIST(
@@ -23,7 +25,7 @@ test_data = torchvision.datasets.FashionMNIST(
 
 torch.manual_seed(42)
 train_data, valid_data = torch.utils.data.random_split(
-    train_and_validate_data, [55_000, 5_000]
+    train_and_valid_data, [55_000, 5_000]
 )
 
 # create data loaders
@@ -46,3 +48,24 @@ accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=10).to(device)
 evaluation = evaluate(model, valid_loader, accuracy)
 
 print(f"Accuracy on validation set: {evaluation}")
+
+if __name__ == "__main__":
+    model.eval()
+    X_new, y_new = next(iter(valid_loader))
+    X_new = X_new[:3].to(device)
+    with torch.no_grad():
+        y_pred_logits = model(X_new)
+    y_pred = y_pred_logits.argmax(dim=1)  # get index of the largest logit
+    logger.info(f"Predicted label: {y_pred}")
+
+    # Compute softmax of logits manually and display values for first 3 records from validation set
+    y_proba = F.softmax(y_pred_logits, dim=1)
+    logger.info(f"Softmax from all values for classes probabilities: {y_proba.round(decimals=3)}")
+
+    # Get top k predictions of the model
+    y_top4_logits, y_top4_indices = torch.topk(y_pred_logits, k=4, dim=1)
+    y_top4_probas = F.softmax(y_top4_logits, dim=1)
+
+    logger.info(f"Top 4 class probabilities ${y_top4_probas.round(decimals=3)}")
+    logger.info(f"Top 4 indies: {y_top4_indices}")
+
