@@ -2,15 +2,14 @@ import torch
 import optuna
 import torchmetrics
 from loguru import logger
+
+from fundamentals.models.training_and_evaluation.evaluate import NNEvaluator
 from utils.device import get_device
 
 from fundamentals.models.training_and_evaluation.training import NNTrainer
 from fundamentals.models.image_classifier.fashion_mnist import (
     train_loader,
     valid_loader,
-)
-from fundamentals.models.regression_mlp.regression_mlp import (
-    evaluate_tm,
 )
 from fundamentals.models.image_classifier.image_classifier import (
     ImageClassifier,
@@ -40,6 +39,7 @@ def objective(trial, train_loader, valid_loader):
     valid_set_accuracy = 0.0
 
     nn_trainer = NNTrainer(model, optimizer, xentropy, train_loader, device)
+    nn_evaluator = NNEvaluator(model, valid_loader, accuracy, device)
     model.train()
 
     for epoch in range(n_epochs):
@@ -47,7 +47,7 @@ def objective(trial, train_loader, valid_loader):
         logger.info(f"Epoch {epoch + 1} / {n_epochs}, Loss: {mean_loss: .4f}")
 
         # evaluate model function .item() to convert the resulting 0-dim tensor to a float
-        valid_set_accuracy = evaluate_tm(model, valid_loader, accuracy).item()
+        valid_set_accuracy = nn_evaluator.evaluate_tm(accuracy).item()
 
         trial.report(valid_set_accuracy, epoch)
         if trial.should_prune():

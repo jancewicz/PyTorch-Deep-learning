@@ -9,6 +9,7 @@ class NNEvaluator:
     """
     Class with few methods to evaluate neural network model metrics.
     """
+
     def __init__(self, model, data_loader, metric_fn, device):
         """
         :param model: current model to evaluate
@@ -19,7 +20,6 @@ class NNEvaluator:
         self.data_loader: DataLoader = data_loader
         self.metric_fn: Callable[[torch.tensor, torch.tensor], None] = metric_fn
         self.device: torch.device = device
-
 
     def evaluate(self, aggregate_fn=torch.mean):
         """
