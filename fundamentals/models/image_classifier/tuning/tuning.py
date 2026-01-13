@@ -2,13 +2,23 @@ import torch
 import optuna
 import torchmetrics
 from loguru import logger
-
 from utils.device import get_device
-from fundamentals.models.image_classifier.fashion_mnist import train_loader, valid_loader
-from fundamentals.models.regression_mlp.regression_mlp import single_training_loop, evaluate_tm
-from fundamentals.models.image_classifier.image_classifier import ImageClassifier, xentropy
+
+from fundamentals.models.training_and_evaluation.training import SimpleNNTrainer
+from fundamentals.models.image_classifier.fashion_mnist import (
+    train_loader,
+    valid_loader,
+)
+from fundamentals.models.regression_mlp.regression_mlp import (
+    evaluate_tm,
+)
+from fundamentals.models.image_classifier.image_classifier import (
+    ImageClassifier,
+    xentropy,
+)
 
 device = get_device()
+
 
 def objective(trial, train_loader, valid_loader):
     """
@@ -20,10 +30,7 @@ def objective(trial, train_loader, valid_loader):
     learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
     n_hidden = trial.suggest_int("n_hidden", 20, 300)
     model = ImageClassifier(
-        n_inputs=1 * 28 * 28,
-        n_hidden1=n_hidden,
-        n_hidden2=n_hidden,
-        n_classes=10
+        n_inputs=1 * 28 * 28, n_hidden1=n_hidden, n_hidden2=n_hidden, n_classes=10
     ).to(device=device)
 
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
@@ -32,9 +39,11 @@ def objective(trial, train_loader, valid_loader):
     n_epochs = 20
     valid_set_accuracy = 0.0
 
+    nn_trainer = SimpleNNTrainer(model, optimizer, xentropy, train_loader, device)
     model.train()
+
     for epoch in range(n_epochs):
-        mean_loss = single_training_loop(model, optimizer, xentropy, train_loader)
+        mean_loss = nn_trainer.single_training_loop()
         logger.info(f"Epoch {epoch + 1} / {n_epochs}, Loss: {mean_loss: .4f}")
 
         # evaluate model function .item() to convert the resulting 0-dim tensor to a float
@@ -46,6 +55,7 @@ def objective(trial, train_loader, valid_loader):
             raise optuna.TrialPruned()
 
     return valid_set_accuracy
+
 
 if __name__ == "__main__":
     torch.manual_seed(42)
@@ -59,9 +69,7 @@ if __name__ == "__main__":
 
     # prunner instance to detect if trial goes bad
     pruner = optuna.pruners.MedianPruner(
-        n_startup_trials=5,
-        n_warmup_steps=0,
-        interval_steps=1
+        n_startup_trials=5, n_warmup_steps=0, interval_steps=1
     )
 
     # start hyperparameter tuning, due to accuracy as metric direction is: maximize

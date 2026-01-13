@@ -6,8 +6,9 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from loguru import logger
 
+from fundamentals.models.training_and_evaluation.training import SimpleNNTrainer
 from utils.device import get_device
-from fundamentals.models.regression_mlp.regression_mlp import train, evaluate
+from fundamentals.models.regression_mlp.regression_mlp import evaluate
 from fundamentals.models.image_classifier.image_classifier import model, xentropy
 
 device = get_device()
@@ -39,11 +40,12 @@ learning_rate = 0.002
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 n_epochs = 20
 
+# instantiate trainer for neural network
+nn_trainer = SimpleNNTrainer(model, optimizer, xentropy, train_loader, device)
+
 
 if __name__ == "__main__":
-    train(
-        model, optimizer, criterion=xentropy, train_loader=train_loader, n_epochs=n_epochs
-    )
+    nn_trainer.train(n_epochs)
 
     # evaluate model function
     accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=10).to(device)
@@ -60,7 +62,9 @@ if __name__ == "__main__":
 
     # Compute softmax of logits manually and display values for first 3 records from validation set
     y_proba = F.softmax(y_pred_logits, dim=1)
-    logger.info(f"Softmax from all values for classes probabilities: {y_proba.round(decimals=3)}")
+    logger.info(
+        f"Softmax from all values for classes probabilities: {y_proba.round(decimals=3)}"
+    )
 
     # Get top k predictions of the model
     y_top4_logits, y_top4_indices = torch.topk(y_pred_logits, k=4, dim=1)
@@ -68,4 +72,3 @@ if __name__ == "__main__":
 
     logger.info(f"Top 4 class probabilities ${y_top4_probas.round(decimals=3)}")
     logger.info(f"Top 4 indies: {y_top4_indices}")
-

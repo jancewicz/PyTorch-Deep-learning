@@ -8,6 +8,7 @@ from fundamentals.models.data import X_valid, y_valid, train_loader
 from fundamentals.models.linear_regression.low_level_api.linear_regression import (
     n_features,
 )
+from fundamentals.models.training_and_evaluation.training import SimpleNNTrainer
 from utils.device import get_device
 
 """
@@ -35,29 +36,8 @@ n_epochs = 20
 # Important to create the optimizer after model is moved to the GPU
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
-
-def single_training_loop(model, optimizer, criterion, train_loader):
-    total_loss = 0
-    for X_batch, y_batch in train_loader:
-        X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-        optimizer.zero_grad()
-
-        y_pred = model(X_batch)
-        loss = criterion(y_pred, y_batch)
-        total_loss += loss.item()
-        loss.backward()
-        optimizer.step()
-
-    mean_loss = total_loss / len(train_loader)
-    return mean_loss
-
-
-
-def train(model, optimizer, criterion, train_loader, n_epochs):
-    model.train()
-    for epoch in range(n_epochs):
-        mean_loss = single_training_loop(model, optimizer, criterion, train_loader)
-        logger.info(f"Epoch {epoch+1} / {n_epochs}, Loss: {mean_loss: .4f}")
+# instantiate trainer class
+nn_trainer = SimpleNNTrainer(model, optimizer, mse, train_loader, device)
 
 
 def evaluate(model, data_loader, metric_fn, aggregate_fn=torch.mean):
@@ -117,7 +97,7 @@ valid_mse = evaluate(model, valid_loader, mse)
 
 
 if __name__ == "__main__":
-    train(model, optimizer, mse, train_loader, n_epochs)
+    nn_trainer.train(n_epochs)
 
     valid_mse = evaluate(
         model,
