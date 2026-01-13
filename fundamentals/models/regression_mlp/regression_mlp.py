@@ -8,7 +8,7 @@ from fundamentals.models.data import X_valid, y_valid, train_loader
 from fundamentals.models.linear_regression.low_level_api.linear_regression import (
     n_features,
 )
-from fundamentals.models.training_and_evaluation.training import SimpleNNTrainer
+from fundamentals.models.training_and_evaluation.training import NNTrainer
 from utils.device import get_device
 
 """
@@ -37,7 +37,7 @@ n_epochs = 20
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 # instantiate trainer class
-nn_trainer = SimpleNNTrainer(model, optimizer, mse, train_loader, device)
+nn_trainer = NNTrainer(model, optimizer, mse, train_loader, device)
 
 
 def evaluate(model, data_loader, metric_fn, aggregate_fn=torch.mean):

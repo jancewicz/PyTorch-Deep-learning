@@ -5,7 +5,7 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 
 
-class SimpleNNTrainer:
+class NNTrainer:
     def __init__(self, model, optimizer, criterion, train_loader, device):
         self.model: Module = model
         self.optimizer: Optimizer = optimizer

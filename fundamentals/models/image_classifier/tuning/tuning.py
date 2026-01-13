@@ -4,7 +4,7 @@ import torchmetrics
 from loguru import logger
 from utils.device import get_device
 
-from fundamentals.models.training_and_evaluation.training import SimpleNNTrainer
+from fundamentals.models.training_and_evaluation.training import NNTrainer
 from fundamentals.models.image_classifier.fashion_mnist import (
     train_loader,
     valid_loader,
@@ -39,7 +39,7 @@ def objective(trial, train_loader, valid_loader):
     n_epochs = 20
     valid_set_accuracy = 0.0
 
-    nn_trainer = SimpleNNTrainer(model, optimizer, xentropy, train_loader, device)
+    nn_trainer = NNTrainer(model, optimizer, xentropy, train_loader, device)
     model.train()
 
     for epoch in range(n_epochs):

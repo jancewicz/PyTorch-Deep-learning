@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from loguru import logger
 
-from fundamentals.models.training_and_evaluation.training import SimpleNNTrainer
+from fundamentals.models.training_and_evaluation.training import NNTrainer
 from utils.device import get_device
 from fundamentals.models.regression_mlp.regression_mlp import evaluate
 from fundamentals.models.image_classifier.image_classifier import model, xentropy
@@ -41,7 +41,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 n_epochs = 20
 
 # instantiate trainer for neural network
-nn_trainer = SimpleNNTrainer(model, optimizer, xentropy, train_loader, device)
+nn_trainer = NNTrainer(model, optimizer, xentropy, train_loader, device)
 
 
 if __name__ == "__main__":
