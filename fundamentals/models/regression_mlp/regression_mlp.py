@@ -8,6 +8,7 @@ from fundamentals.models.data import X_valid, y_valid, train_loader
 from fundamentals.models.linear_regression.low_level_api.linear_regression import (
     n_features,
 )
+from fundamentals.models.training_and_evaluation.evaluate import NNEvaluator
 from fundamentals.models.training_and_evaluation.training import NNTrainer
 from utils.device import get_device
 
@@ -36,75 +37,25 @@ n_epochs = 20
 # Important to create the optimizer after model is moved to the GPU
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
-# instantiate trainer class
-nn_trainer = NNTrainer(model, optimizer, mse, train_loader, device)
+valid_dataset = TensorDataset(X_valid, y_valid)
+valid_loader = DataLoader(valid_dataset, batch_size=32)
 
-
-def evaluate(model, data_loader, metric_fn, aggregate_fn=torch.mean):
-    """
-    Evaluates model and collect metrics within each batch.
-    :param model: current model to evaluate
-    :param data_loader: dataloader for currently used dataset
-    :param metric_fn: function to compute metric for given batch
-    :param aggregate_fn: function to aggregate the batch metrics, computes mean by default
-    :return: aggregated model metrics
-    """
-    model.eval()
-    metrics = []
-    with torch.no_grad():
-        for X_batch, y_batch in data_loader:
-            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-            y_pred = model(X_batch)
-            metric = metric_fn(y_pred, y_batch)
-            metrics.append(metric)
-
-    return aggregate_fn(torch.stack(metrics))
-
-
-# Optionally rmse can be computed as a metric method instead of mse
-def rmse(y_pred, y_true):
-    """
-    Computes root mean squared error.
-    :param y_pred: list of predictions made by model
-    :param y_true: list of true labels
-    :return: returns calculated rmse for current model
-    """
-    return ((y_pred - y_true) ** 2).mean().sqrt()
-
-
-# Or created from torchmetrics library methods
 # Create rmse streaming metric, move it to the GPU
 rmse_tm = torchmetrics.MeanSquaredError(squared=False).to(device)
 
+# instantiate trainer and evaluator class
+nn_trainer = NNTrainer(model, optimizer, mse, train_loader, device)
+nn_evaluator = NNEvaluator(model, valid_loader, rmse_tm, device)
 
-# Alternative method: use torchmetrics library to evaluate model
-def evaluate_tm(model, data_loader, metric):
-    model.eval()
-    metric.reset()  # at the beginning reset metric
-    with torch.no_grad():
-        for X_batch, y_batch in data_loader:
-            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-            y_pred = model(X_batch)
-            metric.update(y_pred, y_batch)  # update the metric at each iteration
-
-    # compute final result
-    return metric.compute()
-
-
-valid_dataset = TensorDataset(X_valid, y_valid)
-valid_loader = DataLoader(valid_dataset, batch_size=32)
-valid_mse = evaluate(model, valid_loader, mse)
+valid_mse = nn_evaluator.evaluate()
 
 
 if __name__ == "__main__":
     nn_trainer.train(n_epochs)
 
-    valid_mse = evaluate(
-        model,
-        valid_loader,
-        mse,
+    valid_mse = nn_evaluator.evaluate(
         aggregate_fn=lambda metrics: torch.sqrt(torch.mean(metrics)),
     )
-    valid_tm = evaluate_tm(model, valid_loader, rmse_tm)
+    valid_tm = nn_evaluator.evaluate_tm(rmse_tm)
 
     logger.info(valid_tm)
