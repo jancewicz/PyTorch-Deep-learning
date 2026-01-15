@@ -10,7 +10,10 @@ from loguru import logger
 from fundamentals.models.training_and_evaluation.evaluate import NNEvaluator
 from fundamentals.models.training_and_evaluation.training import NNTrainer
 from utils.device import get_device
-from fundamentals.models.image_classifier.fashion_mnist.image_classifier import model, xentropy
+from fundamentals.models.image_classifier.fashion_mnist.image_classifier import (
+    model,
+    xentropy,
+)
 
 device = get_device()
 
@@ -76,10 +79,10 @@ if __name__ == "__main__":
     model_data = {
         "model_state_dict": model.state_dict(),
         "hyperparameters": {
-            "n_inputs": 1*28*28,
+            "n_inputs": 1 * 28 * 28,
             "n_hidden1": 300,
             "n_hidden2": 100,
-            "n_classes": 10
-        }
+            "n_classes": 10,
+        },
     }
     torch.save(model_data, "checkpoints/fashion_mnist_weights.pt")
