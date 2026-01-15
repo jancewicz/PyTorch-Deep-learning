@@ -71,3 +71,15 @@ if __name__ == "__main__":
 
     logger.info(f"Top 4 class probabilities ${y_top4_probas.round(decimals=3)}")
     logger.info(f"Top 4 indies: {y_top4_indices}")
+
+    # save model data inside a dict
+    model_data = {
+        "model_state_dict": model.state_dict(),
+        "hyperparameters": {
+            "n_inputs": 1*28*28,
+            "n_hidden1": 300,
+            "n_hidden2": 100,
+            "n_classes": 10
+        }
+    }
+    torch.save(model_data, "checkpoints/fashion_mnist_weights.pt")
