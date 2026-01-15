@@ -7,11 +7,11 @@ from fundamentals.models.training_and_evaluation.evaluate import NNEvaluator
 from utils.device import get_device
 
 from fundamentals.models.training_and_evaluation.training import NNTrainer
-from fundamentals.models.image_classifier.fashion_mnist import (
+from fundamentals.models.image_classifier.fashion_mnist.fashion_mnist import (
     train_loader,
     valid_loader,
 )
-from fundamentals.models.image_classifier.image_classifier import (
+from fundamentals.models.image_classifier.fashion_mnist.image_classifier import (
     ImageClassifier,
     xentropy,
 )

@@ -1,6 +1,6 @@
 import torch
 
-from fundamentals.models.image_classifier.image_classifier import ImageClassifier
+from fundamentals.models.image_classifier.fashion_mnist.image_classifier import ImageClassifier
 
 """
 Loading model's weights from .pt file requires creating exact same model structure 

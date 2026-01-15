@@ -10,7 +10,7 @@ from loguru import logger
 from fundamentals.models.training_and_evaluation.evaluate import NNEvaluator
 from fundamentals.models.training_and_evaluation.training import NNTrainer
 from utils.device import get_device
-from fundamentals.models.image_classifier.image_classifier import model, xentropy
+from fundamentals.models.image_classifier.fashion_mnist.image_classifier import model, xentropy
 
 device = get_device()
 
