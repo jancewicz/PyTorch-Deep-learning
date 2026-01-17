@@ -1,19 +1,27 @@
+import os
+
 import torch
 
 from torch.utils.data import random_split
 from torchvision import datasets
 from torchvision.transforms import v2 as transforms_v2
 
+from dotenv import load_dotenv
 from fundamentals.models.image_classifier.cats_and_dogs.image_processing.transform_subset import (
     SubsetTransformator,
 )
 
+load_dotenv()
 # get both train set and test set dirs
-cats_dogs_training_set_dir = "datasets/cats_and_dogs/training_set"
-cats_dogs_test_set_dir = "datasets/cats_and_dogs/test_set"
+cats_dogs_training_set_dir = os.getenv("CATS_DOGS_TRAINSET_DIR")
+cats_dogs_test_set_dir = os.getenv("CATS_DOGS_TESTSET_DIR")
 SIZE = (224, 224)
 
 torch.manual_seed(42)
+
+# each value representing one color channel (RGB) - mean values comes from PyTorch docs computed on ImageNet
+MEAN_NORMALIZATION_VALUES = [0.485, 0.456, 0.406]
+STD_NORMALIZATION_VALUES = [0.229, 0.224, 0.225]
 
 
 def split_and_transform_trainset(cats_dogs_training_set: str):
@@ -31,7 +39,7 @@ def split_and_transform_trainset(cats_dogs_training_set: str):
             transforms_v2.RandomHorizontalFlip(0.5),
             transforms_v2.ToDtype(torch.float32, scale=True),
             # values from PyTorch docs
-            transforms_v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms_v2.Normalize(mean=MEAN_NORMALIZATION_VALUES, std=STD_NORMALIZATION_VALUES)
         ]
     )
     valid_set_transform = transforms_v2.Compose(
