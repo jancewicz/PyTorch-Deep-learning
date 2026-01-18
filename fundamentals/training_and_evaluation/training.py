@@ -5,6 +5,7 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+
 class NNTrainer:
     def __init__(self, model, optimizer, criterion, train_loader, device):
         self.model: Module = model
@@ -15,7 +16,12 @@ class NNTrainer:
 
     def single_training_loop(self):
         total_loss = 0
-        loop = tqdm(enumerate(self.train_loader), total=len(self.train_loader), unit="batch", leave=False)
+        loop = tqdm(
+            enumerate(self.train_loader),
+            total=len(self.train_loader),
+            unit="batch",
+            leave=False,
+        )
 
         for _, (X_batch, y_batch) in loop:
             X_batch, y_batch = X_batch.to(self.device), y_batch.to(self.device)
