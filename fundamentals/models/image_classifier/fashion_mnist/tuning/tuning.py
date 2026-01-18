@@ -3,10 +3,10 @@ import optuna
 import torchmetrics
 from loguru import logger
 
-from fundamentals.models.training_and_evaluation.evaluate import NNEvaluator
+from fundamentals.training_and_evaluation.evaluate import NNEvaluator
 from utils.device import get_device
 
-from fundamentals.models.training_and_evaluation.training import NNTrainer
+from fundamentals.training_and_evaluation.training import NNTrainer
 from fundamentals.models.image_classifier.fashion_mnist.fashion_mnist import (
     train_loader,
     valid_loader,

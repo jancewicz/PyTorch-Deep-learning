@@ -1,19 +1,26 @@
+import os
+
 import torch
 import torchmetrics
 import torchvision
 import torchvision.transforms.v2 as T
 import torch.nn.functional as F
+from dotenv import load_dotenv
 from torch.utils.data import DataLoader
 from loguru import logger
 
 
-from fundamentals.models.training_and_evaluation.evaluate import NNEvaluator
-from fundamentals.models.training_and_evaluation.training import NNTrainer
+from fundamentals.training_and_evaluation.evaluate import NNEvaluator
+from fundamentals.training_and_evaluation.training import NNTrainer
 from utils.device import get_device
 from fundamentals.models.image_classifier.fashion_mnist.image_classifier import (
     model,
     xentropy,
 )
+
+load_dotenv()
+DATASETS_DIR = os.getenv("DATASETS_ROOT_DIR")
+CHECKPOINTS_DIR = os.getenv("FASHION_MNIST_CHECKPOINTS_DIR")
 
 device = get_device()
 
@@ -22,10 +29,10 @@ toTensor = T.Compose([T.ToImage(), T.ToDtype(torch.float32, scale=True)])
 
 # transform fashion MNIST from PIL to PyTorch float tensors with scaled pixel values
 train_and_valid_data = torchvision.datasets.FashionMNIST(
-    root="datasets", train=True, download=True, transform=toTensor
+    root=DATASETS_DIR, train=True, download=True, transform=toTensor
 )
 test_data = torchvision.datasets.FashionMNIST(
-    root="datasets", train=False, download=True, transform=toTensor
+    root=DATASETS_DIR, train=False, download=True, transform=toTensor
 )
 
 torch.manual_seed(42)
@@ -85,4 +92,4 @@ if __name__ == "__main__":
             "n_classes": 10,
         },
     }
-    torch.save(model_data, "checkpoints/fashion_mnist_weights.pt")
+    torch.save(model_data, f"{CHECKPOINTS_DIR}/fashion_mnist_weights.pt")

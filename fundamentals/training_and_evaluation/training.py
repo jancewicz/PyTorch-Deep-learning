@@ -18,8 +18,8 @@ class NNTrainer:
         for X_batch, y_batch in self.train_loader:
             X_batch, y_batch = X_batch.to(self.device), y_batch.to(self.device)
             self.optimizer.zero_grad()
-
             y_pred = self.model(X_batch)
+
             loss = self.criterion(y_pred, y_batch)
             total_loss += loss.item()
             loss.backward()
