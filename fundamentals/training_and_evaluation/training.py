@@ -3,7 +3,7 @@ from loguru import logger
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
-
+from tqdm import tqdm
 
 class NNTrainer:
     def __init__(self, model, optimizer, criterion, train_loader, device):
@@ -15,7 +15,9 @@ class NNTrainer:
 
     def single_training_loop(self):
         total_loss = 0
-        for X_batch, y_batch in self.train_loader:
+        loop = tqdm(enumerate(self.train_loader), total=len(self.train_loader), unit="batch", leave=False)
+
+        for _, (X_batch, y_batch) in loop:
             X_batch, y_batch = X_batch.to(self.device), y_batch.to(self.device)
             self.optimizer.zero_grad()
             y_pred = self.model(X_batch)
@@ -24,6 +26,8 @@ class NNTrainer:
             total_loss += loss.item()
             loss.backward()
             self.optimizer.step()
+
+            loop.set_postfix(loss=loss.item())
 
         mean_loss = total_loss / len(self.train_loader)
         return mean_loss
