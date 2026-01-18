@@ -39,14 +39,18 @@ def split_and_transform_trainset(cats_dogs_training_set: str):
             transforms_v2.RandomHorizontalFlip(0.5),
             transforms_v2.ToDtype(torch.float32, scale=True),
             # values from PyTorch docs
-            transforms_v2.Normalize(mean=MEAN_NORMALIZATION_VALUES, std=STD_NORMALIZATION_VALUES)
+            transforms_v2.Normalize(
+                mean=MEAN_NORMALIZATION_VALUES, std=STD_NORMALIZATION_VALUES
+            ),
         ]
     )
     valid_set_transform = transforms_v2.Compose(
         [
             *common_transforms,
             transforms_v2.ToDtype(torch.float32, scale=True),
-            transforms_v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms_v2.Normalize(
+                mean=MEAN_NORMALIZATION_VALUES, std=STD_NORMALIZATION_VALUES
+            ),
         ]
     )
 
