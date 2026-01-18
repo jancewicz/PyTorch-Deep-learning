@@ -8,7 +8,7 @@ from fundamentals.models.data import X_valid, y_valid, train_loader
 from fundamentals.models.linear_regression.low_level_api.linear_regression import (
     n_features,
 )
-from fundamentals.training_and_evaluation import NNEvaluator
+from fundamentals.training_and_evaluation.evaluate import NNEvaluator
 from fundamentals.training_and_evaluation.training import NNTrainer
 from utils.device import get_device
 
