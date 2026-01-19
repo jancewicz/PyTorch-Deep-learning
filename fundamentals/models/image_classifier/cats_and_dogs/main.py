@@ -1,7 +1,7 @@
 import os
 
 import torch
-import torch.nn as nn
+import torchmetrics
 from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
@@ -11,14 +11,21 @@ from fundamentals.models.image_classifier.cats_and_dogs.dataloaders import (
     MEAN_NORMALIZATION_VALUES,
     split_and_transform_trainset,
     cats_dogs_training_set_dir,
+    SIZE,
 )
 from fundamentals.models.image_classifier.cats_and_dogs.predictors.cats_dogs_conv_nn import (
     ConvNNCatsDogsClassifier,
 )
-from fundamentals.training_and_evaluation.training import NNTrainer
+from fundamentals.models.image_classifier.cats_and_dogs.predictors.predict import (
+    process_image,
+    predict_image,
+)
+from fundamentals.training_and_evaluation.evaluate import NNEvaluator
 from utils.device import get_device
+from loguru import logger
 
 CATS_DOGS_CHECKPOINTS_DIR = os.getenv("CATS_DOGS_CHECKPOINTS_DIR")
+
 
 def visualize_batch(data_loader):
     # batch has shape (images, labes)
@@ -46,7 +53,7 @@ def visualize_batch(data_loader):
     plt.show()
 
 
-if __name__ == "__main__":
+def main() -> None:
     load_dotenv()
 
     train_set, valid_set = split_and_transform_trainset(cats_dogs_training_set_dir)
@@ -57,19 +64,31 @@ if __name__ == "__main__":
     visualize_batch(train_set_dataloader)
     hermes_img = os.getenv("HERMES_JPG_DIR")
 
-    conv_nn = ConvNNCatsDogsClassifier().to(device=get_device())
-    xentropy = nn.CrossEntropyLoss()
-    learning_rate = 0.0001
-    optimizer = torch.optim.AdamW(conv_nn.parameters(), lr=learning_rate)
-    n_epochs = 40
+    # Model hyperparameters used for training are in README
+    loaded_weights = torch.load(
+        f=f"{CATS_DOGS_CHECKPOINTS_DIR}/cats_dogs_alexNet_weights.pt", weights_only=True
+    )
+    loaded_conv_nn = ConvNNCatsDogsClassifier().to(device=get_device())
+    loaded_conv_nn.load_state_dict(loaded_weights)
+    accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=2).to(get_device())
 
-    nn_trainer = NNTrainer(
-        model=conv_nn,
-        optimizer=optimizer,
-        criterion=xentropy,
-        train_loader=train_set_dataloader,
+    nn_evaluator = NNEvaluator(
+        model=loaded_conv_nn,
+        data_loader=valid_set_dataloader,
+        metric_fn=accuracy,
         device=get_device(),
     )
+    evaluation = nn_evaluator.evaluate()
+    logger.info(f"Accuracy on validation set: {evaluation}")
 
-    nn_trainer.train(n_epochs=n_epochs)
-    torch.save(conv_nn.state_dict(), f"{CATS_DOGS_CHECKPOINTS_DIR}/cats_dogs_alexNet_weights.pt")
+    class_map = {0: "Cat", 1: "Dog"}
+
+    hermes_img_tensor = process_image(hermes_img, size=SIZE)
+    pred, proba = predict_image(loaded_conv_nn, hermes_img_tensor)
+    confidence = proba[0][pred].item()
+
+    logger.info(f"Przewidywana klasa: {class_map[pred.item()]}, pewność: {confidence}")
+
+
+if __name__ == "__main__":
+    main()
