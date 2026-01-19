@@ -15,7 +15,7 @@ load_dotenv()
 # get both train set and test set dirs
 cats_dogs_training_set_dir = os.getenv("CATS_DOGS_TRAINSET_DIR")
 cats_dogs_test_set_dir = os.getenv("CATS_DOGS_TESTSET_DIR")
-SIZE = (224, 224)
+SIZE = (222, 222)
 
 torch.manual_seed(42)
 

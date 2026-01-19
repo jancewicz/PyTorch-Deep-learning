@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 
+from utils.device import get_device
+
 
 class ConvNNCatsDogsClassifier(nn.Module):
     def __init__(self):
@@ -30,3 +32,6 @@ class ConvNNCatsDogsClassifier(nn.Module):
         X = self.classifier(X)
 
         return X
+
+
+conv_nn = ConvNNCatsDogsClassifier().to(device=get_device())
