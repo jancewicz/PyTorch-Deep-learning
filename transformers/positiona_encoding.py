@@ -10,4 +10,4 @@ class PositionalEmbedding(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, X):
-        return self.dropout(X + self.pos_embed[:X.size(1)])
+        return self.dropout(X + self.pos_embed[: X.size(1)])

@@ -2,6 +2,32 @@ import torch
 import torch.nn as nn
 
 
+"""
+Multi-head attention is the architecture that allows the model to create various ways to interpret a single token.
+Modern transformers vary from 8 to 16 MHA units.
+
+What a single unit does is focus on a very specific meaning of the token.
+Taking a simple example like translating "I like football" to Spanish -> "Me gusta el futbol", the token "like"
+can be analyzed in various different contexts in each head.
+
+Every MHA unit consists of three learned projections: Q, K, and V.
+Query - What does this token need from the context?
+Key - How do other tokens advertise their content?
+Value - The actual information of the token.
+
+For example, head 0 focuses on identifying the grammatical meaning of the token, while head 1 is trained to understand 
+verb semantics and head 2 deciphers the emotional meaning of the word 'like'.
+
+All these specific specializations of each head emerge from thousands of epochs during training.
+Each head learns to specialize in something different during the training process, and the model is penalized 
+if two heads start being responsible for the same thing, as this does not decrease the loss function and makes 
+one head completely redundant.
+
+Researchers tried to assign specific roles to each head before training, but it failed because it is very hard
+to predict which patterns are going to be useful, therefore, they let the network learn the most important patterns by itself.
+"""
+
+
 class MultiheadAttention(nn.Module):
     def __init__(self, embed_dim, num_heads, dropout=0.1):
         """
@@ -25,7 +51,7 @@ class MultiheadAttention(nn.Module):
         L - max len of input sequence
         h - num of heads
         d - num of dimensions per head
-        The dimensions 1 and 2 are then swapped.
+        The dimensions 1 and 2 are then swapped: [B, h, L, d].
         """
         return X.view(X.size(0), X.size(1), self.h, self.d).transpose(1, 2)
 
@@ -33,7 +59,7 @@ class MultiheadAttention(nn.Module):
         """
         Apply linear transformation to query, key and value, pass the results through
         split_heads method.
-        Compute the equation Attention(Q,K,V) = softmax(QK.T / (dk ** 0.5)) @ V with dropout on the weights.
+        Compute the equation Attention(Q,K,V) = softmax(QK.T / √d_k) @ V with dropout on the weights.
         """
         q = self.split_heads(self.q_proj(query))
         k = self.split_heads(self.k_proj(key))
