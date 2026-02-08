@@ -5,6 +5,8 @@ import torch.nn as nn
 Xawier and Glorot proposed that we need variance of output of each layer to be equal to the variance of its inputs,
 same for the gradients - equal variance before and after going through a layer.
 
+Created for linear functions like sigmoid or tahn. 
+
 Equal number of inputs and outputs - fan-in, fan-out of the layer.
 Eq:
 sigmoid**2 = 1 / fan_avg
