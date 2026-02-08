@@ -16,7 +16,11 @@ class TransformerEncoderLayer(nn.Module):
     def forward(self, src, src_mask=None, src_key_padding_mask=None):
         # self-attention block
         attn_output, _ = self.self_attn(
-            src, src, src, attn_mask=src_mask, key_padding_mask=src_key_padding_mask
+            src,
+            src,
+            src,  # same for query, key, value
+            attn_mask=src_mask,
+            key_padding_mask=src_key_padding_mask,
         )
         src = self.norm1(src + self.dropout(attn_output))
 
